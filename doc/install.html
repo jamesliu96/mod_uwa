@@ -1,0 +1,125 @@
+<!-- Documentation for mod_uwa installation -->
+
+<html>
+<head>
+<title>mod_uwa installation</title>
+</head>
+<body>
+
+<h2>mod_uwa installation</h2>
+<p>
+
+<p> <b>mod_uwa</b> provides an easy-to-use ldap group 
+  Web Authorization capability for an <a href="http://www.apache.org">Apache</a> 
+  web server. 
+
+<p>
+
+<p>
+<ol>
+  <li><a href="#prerec">Acquire the prerequisites</a>
+  <li><a href="#module">Install the module</a>
+  <li><a href="#auth">Authorize your server to LDAP</a>
+  <li><a href="#config">Configure your system</a>
+</ol>
+
+<p>
+<hr>
+<p>
+
+<h3><a name="prerec">Prerequisites</a></h3>
+
+<p>
+You will need these associated products.  Most of these are available
+in normal unix distributions.
+
+<p>
+<ul>
+
+<li>An Apache installation. Either version 1.3 or 2.x is OK.
+<ul>
+<li><a href="http://www.apache.org">Apache home</a>
+</ul>
+<p>
+
+<p>
+<li>An up-to-date OpenSSL library. 
+<ul>
+<li><a href="http://www.openssl.org">OpenSSL home</a>
+</ul>
+<p>
+
+<li>An up-to-date OpenLDAP library. 
+<ul>
+<li><a href="http://www.openldap.org">OpenLDAP home</a>
+</ul>
+
+<p>
+<li>An up-to-date sasl2 library.   
+<ul>
+<li><a href="http://asg.web.cmu.edu/sasl/sasl-library.html">SASL home</a>
+</ul>
+<p>
+
+<p>
+<li>A kerberos library.
+SASL2 seems to requires the <tt>gssapi_krb5</tt> library.
+Otherwise kerberos would not be needed.
+<ul>
+<li><a href="http://web.mit.edu/kerberos/www/">Kerberos home</a>
+</ul>
+<p>
+
+</ul>
+
+
+
+<p>
+<h3><a name="module">Build and install the module</a></h3>
+
+<p>
+<ol>
+<li> Get the current <a href="http://staff.washington.edu/fox/mod_uwa/mod_uwa-current.tar.gz">uwa module</a>.
+<li> Extract the file contents into a directory.
+<li> cd to the directory.
+<li> Check the configuration information in: <tt>ldaplib.h</tt>.
+     It should be correct for University of Washington sites.
+<li> Configure and make.  Note that sasl2 requires kerberos, even though
+     your configuration may not use it.  You may
+     need to specify both <tt>--with-sasl2</tt> and <tt>--with-krb5</tt>.
+<p>
+<tt><pre>
+  $ configure
+  $ make
+  $ make install
+</pre></tt>
+</ol>
+
+
+<p>
+<h3><a name="auth"></a>Authorize your server to LDAP</h3>
+<p>
+UW sites will have to authenticate with a UW issued
+ssl certificate. Contact the
+<a href="https://server-reg.cac.washington.edu/">registration site</a>
+to request authorization. 
+You will need a
+<a href=https://certs.cac.washington.edu/>UW CA</a> certificate.
+
+
+<p>
+If you want to use Kerberos authentication to LDAP you will
+also need a kerberos id and keytab for that name.
+<p>
+If you want to use simple authentication va SSL to LDAP you will
+only need a password attribute for that name.
+<p>
+
+<p>
+<h3><a name="config"></a>Configure your system</h3>
+<p>
+See the <a href=mod_uwa.html>module configuration</a> documentation.
+
+
+</html>
+

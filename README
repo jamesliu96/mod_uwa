@@ -1,0 +1,28 @@
+This is the University of Washington apache authorization
+module (mod_uwa).  
+
+Build, install and run
+----------------------
+
+See doc/install.html for installation instructions.
+See doc/mod_uwa.html for user instructions.
+
+
+Debugging the ldap interface.
+-----------------------------
+
+Build the module with
+
+  -DMOD_UWA_DEBUG
+
+to get more output from the module as it tries to 
+contact the ldap server.  To exploit this run
+your apache in 'single user' mode: with a "-X".
+
+Build with 
+
+  -DUWA_LDAP_DEBUG_LEVEL=9
+
+to get even more debug output.
+
+

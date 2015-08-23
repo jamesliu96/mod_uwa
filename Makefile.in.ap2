@@ -1,0 +1,73 @@
+# Makefile for Apache2 DSO module
+#
+
+builddir     = .
+
+APXS=@APXS@
+UWADEPLIBS=@LIBS@
+
+# top_dir      = @APACHE_PREFIX@
+
+top_srcdir   = @APACHE_PREFIX@
+top_builddir = @APACHE_PREFIX@
+
+include @APACHE_INSTALLBUILDDIR@/special.mk
+
+INCLUDES=-I.
+CPPFLAGS=$(AP_INCLUDE) @CPPFLAGS@ @DEFS@ -I.
+CFLAGS=@CFLAGS@ $(AP_CFLAGS) $(CPPFLAGS) 
+LDFLAGS=@AIX_LDFLAGS@ @LDFLAGS@ 
+
+DIST= .deps \
+      COPYRIGHT \
+      README \
+      Makefile.in.ap1 \
+      Makefile.in.ap2 \
+      Makefile.tmpl \
+      config.h.in \
+      configure \
+      configure.ac \
+      install-sh \
+      ldaplib.c \
+      ldaplib.h \
+      libuwa.module.in \
+      mod_uwa.c \
+      modules.mk \
+      uwa_crypt.c \
+      uwa_crypt.h \
+      ldaptest.c
+
+DISTDOC=doc/install.html doc/mod_uwa.html
+DISTNAME=@DISTNAME@
+
+
+all: local-shared-build @NEED_SLIB_CLEAN@
+
+$(OBJ):	Makefile
+
+need_slib_clean:	
+	@echo ""
+	@echo "Before installing the module:"
+	@echo " - shutdown any running apache server"
+	@echo " - run 'slibclean'"
+	@echo ""
+
+dist:
+	@echo "Making mod_uwa distribution ${DISTNAME}"
+	@rm -rf $(DISTNAME) $(DISTNAME).tar $(DISTNAME).tar.gz
+	@mkdir $(DISTNAME)
+	@mkdir $(DISTNAME)/doc
+	@cp -p $(DIST) $(DISTNAME)
+	@cp -p $(DISTDOC) $(DISTNAME)/doc
+	@tar cf $(DISTNAME).tar $(DISTNAME)
+	@gzip $(DISTNAME).tar
+	@rm -rf $(DISTNAME)
+
+ldaptest:	ldaptest.o ldaplib.o
+	cc -g -o ldaptest ldaptest.o ldaplib.o $(LDFLAGS) $(CPPFLAGS) \
+		-lldap -llber -lsasl2 -lgssapi_krb5 -lkrb5 -lk5crypto -lcom_err \
+		-lssl -lcrypto -ldl -lresolv
+
+
+clean:	local-clean
+

@@ -1,0 +1,93 @@
+# -*- make -*-
+#
+# Makefile for apache 1.3 dso module build
+#
+
+CC=@CC@
+
+RM=@RM@
+
+APXS=@APXS@
+AP_INCLUDE=-I`$(APXS) -q INCLUDEDIR`
+AP_CFLAGS=`$(APXS) -q CFLAGS` `$(APXS) -q CFLAGS_SHLIB`
+
+LIBS=@LIBS@
+CPPFLAGS=$(AP_INCLUDE) @CPPFLAGS@ @DEFS@ -I.
+CFLAGS=@CFLAGS@ $(CPPFLAGS) $(AP_CFLAGS)
+LDFLAGS=@AIX_LDFLAGS@ @LDFLAGS@ @LIBS@
+
+OBJ=ldaplib.o mod_uwa.o uwa_crypt.o 
+
+HDR=ldaplib.h uwa_crypt.h
+
+DIST= .deps \
+      COPYRIGHT \
+      README \
+      Makefile.in.ap1 \
+      Makefile.in.ap2 \
+      Makefile.tmpl \
+      config.h.in \
+      configure \
+      configure.ac \
+      install-sh \
+      ldaplib.c \
+      ldaplib.h \
+      libuwa.module.in \
+      mod_uwa.c \
+      modules.mk \
+      uwa_crypt.c \
+      uwa_crypt.h \
+      ldaptest.c
+
+DISTDOC=doc/install.html doc/mod_uwa.html
+DISTNAME=@DISTNAME@
+
+
+.c.o:
+	$(CC) -c $(CFLAGS) $< -o $@
+
+# ----------------------------------------
+
+all: apache_module @NEED_SLIB_CLEAN@
+
+$(OBJ):	Makefile $(HDR)
+
+install: install_module
+
+apache_module: mod_uwa.so 
+
+mod_uwa.so: $(OBJ) $(HDR)
+	$(APXS) -c -o mod_uwa.so $(LDFLAGS) $(CPPFLAGS) $(OBJ)
+
+install_module: apache_module
+	$(APXS) -i -A -n uwa mod_uwa.so
+
+need_slib_clean:
+	@echo ""
+	@echo "Before installing the module:"
+	@echo " - shutdown any running apache server"
+	@echo " - run 'slibclean'"
+	@echo ""
+
+dist:
+	@echo "Making mod_uwa distribution ${DISTNAME}"
+	@rm -rf $(DISTNAME) $(DISTNAME).tar $(DISTNAME).tar.gz
+	@mkdir $(DISTNAME)
+	@mkdir $(DISTNAME)/doc
+	@cp -p $(DIST) $(DISTNAME)
+	@cp -p $(DISTDOC) $(DISTNAME)/doc
+	@tar cf $(DISTNAME).tar $(DISTNAME)
+	@gzip $(DISTNAME).tar
+	@rm -rf $(DISTNAME)
+	
+ldaptest:	ldaptest.o ldaplib.o
+	cc -g -o ldaptest ldaptest.o ldaplib.o $(LDFLAGS) $(CPPFLAGS) \
+		-lldap -llber -lsasl2 -lgssapi_krb5 -lkrb5 -lk5crypto -lcom_err \
+		-lssl -lcrypto -ldl -lresolv 
+
+
+# Cleanup targets
+
+clean::
+	$(RM) -f *.o *.lo *.la *.slo *.so
+

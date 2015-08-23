@@ -1,0 +1,436 @@
+<!-- Documentation for mod_uwa directives -->
+
+<html>
+<head>
+<title>mod_uwa</title>
+<link rel=stylesheet type=text/css href=http://httpd.apache.org/docs-2.0/style/css/manual.css>
+</head>
+<body>
+
+<div id="page-header"></div>
+<a href="http://www.washington.edu/">
+ <h2>
+ <img src="http://www.washington.edu/home/graphics/UWlogo150p.gif"
+      alt="University of Washington" border="0" valign=center></a>
+ &nbsp;&nbsp;ITI-CP Security Middleware
+ </h2>
+
+<p>
+<div id="page-content">
+<p>
+<div id="preamble"><h1>module mod_uwa</h1>
+
+
+<table class="module"><tr><th>Description:</th>
+  <td>
+ Provides group and attribute authorization of
+  browser users.
+  </td></tr>
+<tr><th>Module Identifier:</th><td>uwa_module</td></tr>
+</table>
+
+<h3>Summary</h3>
+
+<ul>
+<li>This module provides authorization based on attributes
+and group memberships described by the authorization ldap server.
+<li>A typical scenario is a site available only to University
+faculty and staff.  
+</ul>
+</div>
+
+<div id="quickview"><h3 class="directives">Directives</h3>
+<ul id="toc">
+<li><a href="#AuthType">AuthType</a></li>
+<li><a href="#AuthGroupFile">AuthGroupFile</a></li>
+<li><a href="#UWAuthLdapServer">UWAuthLdapServer</a></li>
+<li><a href="#UWAuthPersonLdapServer">UWAuthPersonLdapServer</a></li>
+<li><a href="#UWAuthGroupLdapServer">UWAuthGroupLdapServer</a></li>
+<li><a href="#UWAuthCertDB">UWAuthCertDB</a></li>
+<li><a href="#UWAuthBindCert">UWAuthBindCert</a></li>
+<li><a href="#UWAuthBindKey">UWAuthBindKey</a></li>
+<li><a href="#UWAuthCookie">UWAuthCookie</a></li>
+<li><a href="#UWAuthRequireCourseOwnership">UWAuthRequireCourseOwnership</a></li>
+<li><a href="#UWAuthImplicitOr">UWAuthImplicitOr</a></li>
+<li><a href="#require">require</a></li>
+</ul>
+<h3>Topics</h3>
+
+<!--
+<ul id="topics">
+<li><a href="#shibex">Attribute example</a>
+<li><a href="#shibex">Courses example</a>
+</ul>
+ -->
+</div>
+<p>
+
+<p>
+
+<div class="top">
+  <a href="#page-header"><img alt="top" src="http://httpd.apache.org/docs-2.0//images/up.gif"/></a>
+</div>
+
+<div class="directive-section">
+ <h2><a name="AuthType" id="AuthType">AuthType</a> Directive</h2>
+<table class="directive">
+<tr><th>Description:</th><td>Activates authorization checking</td></tr>
+<tr><th>Syntax:</TH><td nowrap><code>AuthType <var>type</var></td></tr>
+<tr><th>Context:</th><td>.htaccess</td></tr>
+<tr><th>Override:</th><td><i>none</i></td></tr>
+</table>
+    <p><code class="directive">AuthType</code> activates <b>mod_uwa</b> if the
+    specified type is one that the module recognizes:
+    Presently <b>uwnetid</b> and <b>shibboleth</b>. 
+    
+
+    <div class="example"><h3>Examples</h3><p><code>
+      Authtype&nbsp;shibboleth
+    </code></p></div>
+
+</div>
+<p>
+
+
+<div class="top">
+  <a href="#page-header"><img alt="top" src="http://httpd.apache.org/docs-2.0//images/up.gif"/></a>
+</div>
+
+<div class="directive-section">
+ <h2><a name="AuthGroupFile" id="AuthGroupFile">AuthGroupFile</a> Directive</h2>
+<table class="directive">
+<tr><th>Description:</th><td>Deactivates mod_uwa.</td></tr>
+<tr><th>Syntax:</th><td nowrap><code>AuthGroupFile <var>etc.</var> 
+   </td></tr>
+<tr><th>Context:</th><td>.htaccess</td></tr>
+<tr><th>Override:</th><td><i>none</i></td></tr>
+</table>
+    <p> Presence of an <code class="directive">AuthGroupFile</code> 
+    directive deactivates mod_uwa.
+
+</div>
+<p>
+
+
+<div class="top">
+  <a href="#page-header"><img alt="top" src="http://httpd.apache.org/docs-2.0//images/up.gif"/></a>
+</div>
+
+<div class="directive-section">
+ <h2><a name="UWAuthLdapServer" id="UWAuthLdapServer">UWAuthLdapServer</a> Directive</h2>
+<table class="directive">
+<tr><th>Description:</th><td>Identifies the ldap server for all queries</td></tr>
+<tr><th>Syntax:</TH><td nowrap><code>UWAuthLdapServer <var>server:port</var></td></tr>
+<tr><th>Context:</th><td>server config</td></tr>
+<tr><th>Override:</th><td><i>none</i></td></tr>
+</table>
+    <p><code class="directive">UWAuthLdapServer</code> 
+    Identify the ldap server for person, group and course information.  
+
+    <div class="example"><h3>Examples</h3><p><code>
+      UWAuthLdapServer&nbsp;groups.u.washington.edu:389 
+    </code></p></div>
+
+</div>
+<p>
+
+<div class="top">
+  <a href="#page-header"><img alt="top" src="http://httpd.apache.org/docs-2.0//images/up.gif"/></a>
+</div>
+
+<div class="directive-section">
+ <h2><a name="UWAuthPersonLdapServer" id="UWAuthPersonLdapServer">UWAuthPersonLdapServer</a> Directive</h2>
+<table class="directive">
+<tr><th>Description:</th><td>Identifies the ldap server for person queries</td></tr>
+<tr><th>Syntax:</TH><td nowrap><code>UWAuthPersonLdapServer <var>server:port</var></td></tr>
+<tr><th>Context:</th><td>server config</td></tr>
+<tr><th>Override:</th><td><i>none</i></td></tr>
+</table>
+    <p><code class="directive">UWAuthLdapServer</code> 
+    Identify the ldap server for person info: affiliation, type.  
+
+    <div class="example"><h3>Examples</h3><p><code>
+      UWAuthPersonLdapServer&nbsp;pds.u.washington.edu:389 
+    </code></p></div>
+
+</div>
+<p>
+
+<div class="top">
+  <a href="#page-header"><img alt="top" src="http://httpd.apache.org/docs-2.0//images/up.gif"/></a>
+</div>
+
+<div class="directive-section">
+ <h2><a name="UWAuthGroupLdapServer" id="UWAuthGroupLdapServer">UWAuthGroupLdapServer</a> Directive</h2>
+<table class="directive">
+<tr><th>Description:</th><td>Identifies the ldap server for group and course queries</td></tr>
+<tr><th>Syntax:</TH><td nowrap><code>UWAuthGroupLdapServer <var>server:port</var></td></tr>
+<tr><th>Context:</th><td>server config</td></tr>
+<tr><th>Override:</th><td><i>none</i></td></tr>
+</table>
+    <p><code class="directive">UWAuthLdapServer</code> 
+    Identify the ldap server for group info: groups, courses.  
+
+    <div class="example"><h3>Examples</h3><p><code>
+      UWAuthGroupLdapServer&nbsp;groups.u.washington.edu:389 
+    </code></p></div>
+
+</div>
+<p>
+
+<div class="top">
+  <a href="#page-header"><img alt="top" src="http://httpd.apache.org/docs-2.0//images/up.gif"/></a>
+</div>
+
+<div class="directive-section">
+ <h2><a name="UWAuthCertDB" id="UWAuthCertDB">UWAuthCertDB</a> Directive</h2>
+<table class="directive">
+<tr><th>Description:</th><td>Defines an application identifier</td></tr>
+<tr><th>Syntax:</th><td nowrap><code>UWAuthCertDB <var>cert_db_file</var>
+     </td></tr>
+<tr><th>Context:</th><td>server config</td></tr>
+<tr><th>Override:</th><td><i>none</i></td></tr>
+</table>
+    <p><code class="directive">UWAuthCertDB</code> 
+    Identifies the SSL certificate CA database to use for authenticating
+    the ldap server's certificate.
+    <p>
+    The file must be readable by the user and group of the server.
+
+
+
+    <div class="example"><h3>Examples</h3><p><code>
+      UWAuthCertDB&nbsp;/usr/local/apache/conf/certdb.crt
+    </code></p></div>
+
+</div>
+<p>
+
+<div class="top">
+  <a href="#page-header"><img alt="top" src="http://httpd.apache.org/docs-2.0//images/up.gif"/></a>
+</div>
+
+<div class="directive-section">
+ <h2><a name="UWAuthBindCert" id="UWAuthBindCert">UWAuthBindCert</a> Directive</h2>
+<table class="directive">
+<tr><th>Description:</th><td>Identifies the SSL certificate to use to authenticate to the ldap server.</td></tr>
+<tr><th>Syntax:</th><td nowrap><code>UWAuthBindCert <var>cert_file</var>
+  </td></tr>
+<tr><th>Context:</th><td>server config</td></tr>
+<tr><th>Override:</th><td><i>none</i></td></tr>
+</table>
+    <p><code class="directive">UWAuthBindCert</code> 
+   
+    Identifies the SSL certificate to use for authenticating
+    to the ldap server.
+    <p>
+    The file must be readable by the user and group of the server.
+
+    <div class="example"><h3>Examples</h3><p><code>
+      UWAuthBindCert&nbsp;/usr/local/apache/conf/my.crt
+    </code></p></div>
+
+</div>
+<p>
+
+<div class="top">
+  <a href="#page-header"><img alt="top" src="http://httpd.apache.org/docs-2.0//images/up.gif"/></a>
+</div>
+
+<div class="directive-section">
+ <h2><a name="UWAuthBindKey" id="UWAuthBindKey">UWAuthBindKey</a> Directive</h2>
+<table class="directive">
+<tr><th>Description:</th><td>Identifies the key for the authentication certificate.</td></tr>
+<tr><th>Syntax:</th><td nowrap><code>UWAuthBindKey <var>key_file</var>
+  </td></tr>
+<tr><th>Context:</th><td>server config</td></tr>
+<tr><th>Override:</th><td><i>none</i></td></tr>
+</table>
+    <p><code class="directive">UWAuthBindKey</code> 
+   
+    Identifies the key for the authentication certificate.
+    <p>
+    The file must be readable by the user and group of the server.
+
+    <div class="example"><h3>Examples</h3><p><code>
+      UWAuthBindKey&nbsp;/usr/local/apache/conf/my.key
+    </code></p></div>
+
+</div>
+<p>
+
+<div class="top">
+  <a href="#page-header"><img alt="top" src="http://httpd.apache.org/docs-2.0//images/up.gif"/></a>
+</div>
+
+<div class="directive-section">
+ <h2><a name="UWAuthCookie" id="UWAuthCookie">UWAuthCookie</a> Directive</h2>
+<table class="directive">
+<tr><th>Description:</th><td>Names the cookie to use for session control.</td></tr>
+<tr><th>Syntax:</th><td nowrap><code>UWAuthCookie <var>cookie_name</var> 
+   </td></tr>
+<tr><th>Context:</th><td>server config</td></tr>
+<tr><th>Override:</th><td><i>none</i></td></tr>
+</table>
+    <p><code class="directive">UWAuthCookie</code> 
+    Identifies the name of the cookie for mod_uwa to use for session control.
+
+    <div class="example"><h3>Examples</h3><p><code>
+      UWAuthCookie&nbsp;my_auth 
+    </code></p></div>
+
+</div>
+<p>
+
+<div class="top">
+  <a href="#page-header"><img alt="top" src="http://httpd.apache.org/docs-2.0//images/up.gif"/></a>
+</div>
+
+<div class="directive-section">
+ <h2><a name="UWAuthRequireCourseOwnership" id="UWAuthRequireCourseOwnership">UWAuthRequireCourseOwnership</a> Directive</h2>
+<table class="directive">
+<tr><th>Description:</th><td>Toggles requirement that pages requesting course information must
+ be owners of that course.</td></tr>
+<tr><th>Syntax:</th><td nowrap><code>UWAuthRequireCourseOwnership <var>On|Off</var> 
+   </td></tr>
+<tr><th>Context:</th><td>server config</td></tr>
+<tr><th>Override:</th><td><i>none</i></td></tr>
+</table>
+    <p>When the <code class="directive">UWAuthRequireCourseOwnership</code> 
+    flag is set, course information can be utilized only be owners of that course. 
+    Specifically, the web resource must be owned (in the UNIX filesystem sense) by
+    an owner (e.g., an instructor) of a particular course if any "require course" directives
+    are to be used.
+    
+
+    <div class="example"><h3>Examples</h3><p><code>
+      UWAuthRequireCourseOwnership&nbsp;On 
+    </code></p></div>
+
+</div>
+<p>
+
+<div class="top">
+  <a href="#page-header"><img alt="top" src="http://httpd.apache.org/docs-2.0//images/up.gif"/></a>
+</div>
+
+<div class="directive-section">
+ <h2><a name="UWAuthImplicitOr" id="UWAuthImplicitOr">UWAuthImplicitOr</a> Directive</h2>
+<table class="directive">
+<tr><th>Description:</th><td>Toggles "implicit-or" logic for multi-line and multi-directory authorization 
+ directives.</td></tr>
+<tr><th>Syntax:</th><td nowrap><code>UWAuthImplicitOr <var>On|Off</var> 
+   </td></tr>
+<tr><th>Context:</th><td>server config</td></tr>
+<tr><th>Override:</th><td><i>none</i></td></tr>
+</table>
+    <p>When the <code class="directive">UWAuthImplicitOr</code> 
+    flag is set, independent authorization directives will be combined by a logical OR.
+    Default is to AND them.
+    
+
+    <div class="example"><h3>Examples</h3><p><code>
+      UWAuthImplicitOr&nbsp;On 
+    </code></p></div>
+
+</div>
+<p>
+
+<div class="top">
+  <a href="#page-header"><img alt="top" src="http://httpd.apache.org/docs-2.0//images/up.gif"/></a>
+</div>
+
+<div class="directive-section">
+ <h2><a name="require" id="require">require</a> Directive</h2>
+<table class="directive">
+<tr><th>Description:</th><td>Describes an authorization requirement</td></tr>
+<tr><th>Syntax:</th><td nowrap><code>require <var><i>requirement</i></var> 
+   </td></tr>
+<tr><th>Context:</th><td>.htaccess</td></tr>
+<tr><th>Override:</th><td><i>none</i></td></tr>
+</table>
+    <p><code class="directive">Require</code> 
+    defines an authorization requirement.
+
+<p>
+A simple <i>requirement</i>  is a condition plus an argument.
+<table align=center cellspacing=2 cellpadding=3 border=2>
+<tr>
+  <th>condition</th>
+  <th><i>arg</i></th>
+  <th>meaning</th>
+</tr>
+
+<tr>
+  <td><tt>valid-user</tt></td>
+  <td><i>(none)</i></td>
+  <td>User must have a valid UWNet ID</td>
+</tr>
+
+<tr>
+  <td><tt>user</tt> <i>arg</i></td>
+  <td><i>UWNet ID</i></td>
+  <td>User must be the specified id</td>
+</tr>
+
+<tr>
+  <td><tt>type</tt> <i>arg</i></td>
+  <td><tt>faculty<br>staff<br>student<br>...</tt></td>
+    <td>User must be the specified <a href="#webtypes">type</a></td>
+</tr>
+
+<tr>
+  <td><tt>group</tt> <i>arg</i></td>
+  <td><i>group name</i></td>
+  <td>User must be the in the specified group</td>
+</tr>
+
+<tr>
+  <td><tt>course</tt> <i>arg</i></td>
+  <td><i>course name</i></td>
+  <td>User must be the in the specified course.<br>
+          </td>
+</tr>
+
+<tr>
+  <td><tt>ugroup</tt> <i>arg</i></td>
+  <td><i>unix group name</i></td>
+  <td>User must be the in the specified unix group</td>
+</tr>
+
+
+</table>
+
+<p>
+In addition, simple requirements may be combined with the
+logical operators <tt>and</tt>, <tt>or</tt>, and <tt>not</tt>..
+Use parentheses to specify operator precedence.
+<p>
+<p> Courses are identified by the quarter, year and SLN, e.g. <tt>WIN2007.1021</tt>. 
+  Quarter prefixes are WIN, SPR, SUM and AUT. 
+   Students, instructors, and TAs are all considered to be 
+    members of a course.
+<p>
+
+    <div class="example"><h3>Examples</h3><p><code>
+      require user spud carot potato
+      <br>
+      require group u:cac:all or user spud
+    </code></p></div>
+
+</div>
+<p>
+
+
+<!-- topic here when we have them -->
+
+
+
+<p>
+<div id="footer">
+<p class="apache">Copyright 2004-2007 The University of Washington</p>
+
+</div>
+</body>
+</html>
+

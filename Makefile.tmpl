@@ -1,0 +1,27 @@
+# Makefile template for the static build (apache 1.3)
+
+LIB=libuwa.a
+
+OBJS=mod_uwa.o uwa_crypt.o ldaplib.o 
+
+all:	lib
+
+lib:	$(LIB)
+
+libuwa.a:	$(OBJS)
+	rm -f $@
+	ar cr $@ $(OBJS)
+	$(RANLIB) $@
+
+.c.o:	
+	$(CC) -c $(INCLUDES) $(CFLAGS) $<
+
+clean:	
+	rm -f $(OBJS)
+	rm -f libuwa.a
+
+#Dependencies
+
+$(OBJS): Makefile
+
+# DO NOT REMOVE

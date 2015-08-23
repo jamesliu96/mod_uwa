@@ -1,0 +1,13 @@
+# Makefile stuff for the static build
+#
+
+Name: uwa_module
+
+ConfigStart
+
+    INCLUDES="$INCLUDES  @CPPFLAGS@ @DEFS@ -I." 
+    CFLAGS="$CFLAGS @CFLAGS@ $INCLUDES "
+    LDFLAGS="$LDFLAGS @AIX_LDFLAGS@ @LDFLAGS@ @LIBS@ " 
+
+ConfigEnd
+
